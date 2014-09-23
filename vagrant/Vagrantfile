@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+#require 'yaml'
+
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "web" do |web|
+    web.vm.box = "ubuntu/trusty64"
+    web.vm.hostname = "web-box.dev"
+    web.vm.network "private_network", ip: "192.168.100.123"
+    web.vm.provision "shell", path: "prepare_web.sh"
+  end
+
+  config.vm.define "ci" do |ci|
+    ci.vm.box = "ubuntu/trusty64"
+    ci.vm.hostname = "ci-box.dev"
+    ci.vm.network "private_network", ip: "192.168.100.124"
+    ci.vm.synced_folder '../ansible', '/ansible', mount_options: ["dmode=775,fmode=664"]
+    ci.vm.provision "shell", path: "prepare_ci.sh"
+  end
+
+end
