@@ -1,0 +1,29 @@
+---
+
+apache_disable_default_site: false
+
+apache_modules:
+  - rewrite
+  - vhost_alias
+  - headers
+  - expires
+  - ssl
+  - proxy
+  - proxy_html
+  - proxy_http
+  - xml2enc
+
+apache_vhosts: []
+# server_name
+# doc_root
+# basedir
+# server_alias
+# ssl_cert
+# ssl_key
+# ssl_chain
+# newrelic_enabled
+# newrelic_appname
+# newrelic_license
+
+apache_ports: []
+

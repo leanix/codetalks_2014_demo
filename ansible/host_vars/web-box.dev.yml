@@ -1,0 +1,14 @@
+host_name_short: "web-box"
+host_name: "{{host_name_short}}.dev"
+
+#
+# target path for rsync
+#
+webbox_deploy_path: "/opt/codetalks_2014_demo"
+
+#
+# virtual host configuration for the apache role
+#
+apache_vhosts:
+  - server_name: "demo.{{host_name_short}}.dev"
+    doc_root: "{{webbox_deploy_path}}"

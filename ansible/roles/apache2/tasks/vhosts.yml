@@ -1,0 +1,11 @@
+---
+
+- name: Create Apache vhost
+  template: src={{item.config_template|default("vhost_https.conf.j2")}} dest=/etc/apache2/sites-available/{{item.server_name}}.conf
+  notify: restart apache
+  with_items: apache_vhosts
+
+- name: Enable vhost
+  command: a2ensite {{item.server_name}}.conf creates="/etc/apache2/sites-enabled/{{item.server_name}}.conf"
+  notify: restart apache
+  with_items: apache_vhosts

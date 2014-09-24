@@ -1,0 +1,1 @@
+greeting: "{{ lookup('env', 'GREETING')}}"

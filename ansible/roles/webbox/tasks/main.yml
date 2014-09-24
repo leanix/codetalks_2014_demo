@@ -1,0 +1,27 @@
+---
+#
+# Here we manipulate the remote file system
+#
+- name: Delete target directory
+  file: dest={{webbox_deploy_path}} state=absent
+
+- name: Create target directory
+  file: dest={{webbox_deploy_path}} mode=666 state=directory
+
+#
+# In this simple example we sync a local folder using rsync.
+#
+- name: Copy files
+  copy: src=/webroot/ dest={{webbox_deploy_path}}
+
+#
+# The template is used to generate the greeting in the index.html file.
+#
+- name: Generate index file
+  template: src=index.html.j2 dest={{webbox_deploy_path}}/index.html mode=644
+
+- name: Change owner to www-data
+  shell: "chown -R www-data:www-data {{webbox_deploy_path}}"
+
+- name: Change owner to www-data
+  shell: "chmod -R 755 {{webbox_deploy_path}}"

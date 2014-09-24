@@ -1,0 +1,5 @@
+#
+# This is for the ci-box, which is setup locally on the command line.
+#
+host_name_short: "ci-box"
+host_name: "{{host_name_short}}.dev"

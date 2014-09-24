@@ -1,0 +1,38 @@
+---
+
+- name: Check if apache2 is installed
+  sudo: yes
+  command: dpkg -s apache2
+  register: dpkg_check
+  failed_when: false
+  changed_when: false
+
+- name: Install Apache
+  sudo: yes
+  apt: pkg=apache2 state=latest
+  when: dpkg_check.rc == 1
+
+- name: Install Apache Modules
+  command: a2enmod {{item}} creates="/etc/apache2/mods-enabled/{{item}}.load"
+  notify: restart apache
+  with_items: apache_modules
+
+- name: Create custom config
+  template: src=my.conf.j2 dest="/etc/apache2/conf-available/z-my.conf"
+  notify: restart apache
+
+- name: Install custom config
+  command: a2enconf "z-my" creates="/etc/apache2/conf-enabled/z-my.conf"
+  notify: restart apache
+
+- name: Disable default site
+  command: a2dissite 000-default.conf removes="/etc/apache2/sites-enabled/000-default.conf"
+  notify: restart apache
+  when: apache_disable_default_site
+  ignore_errors: yes
+
+- name: Add additional listen ports
+  lineinfile: dest="/etc/apache2/ports.conf" regexp="Listen\s{{item}}" line="Listen {{item}}"
+  with_items: apache_ports
+  notify: restart apache
+  

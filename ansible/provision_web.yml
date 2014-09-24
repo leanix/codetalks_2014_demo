@@ -1,0 +1,10 @@
+#
+# Provisions the demo web server
+#
+---
+- hosts: web
+  sudo: true
+  roles:
+    - {role: 'init'}
+    - {role: 'apache2'}
+    - {role: 'webbox'}

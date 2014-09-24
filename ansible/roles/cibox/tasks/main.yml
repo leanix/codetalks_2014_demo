@@ -1,0 +1,33 @@
+- name: Install required packages
+  apt: pkg={{ item }} state=latest
+  with_items: ["curl", "wget", "python-software-properties", "software-properties-common", "jenkins", "sshpass"]
+
+#
+# the gateway is used to reach web-box.dev
+#
+- name: Make web-box.dev known
+  lineinfile: dest="/etc/hosts" regexp="10\.0\.2\.2 web-box\.dev" line="10.0.2.2 web-box.dev" insertbefore=BOF
+- name: Make demo.web-box.dev known
+  lineinfile: dest="/etc/hosts" regexp="10\.0\.2\.2 demo\.web-box\.dev" line="10.0.2.2 demo.web-box.dev" insertbefore=BOF
+
+#
+# the port is hardcoded in the vagrant file
+#
+- name: add web-box to known hosts
+  sudo_user: jenkins
+  shell: sshpass -p 'vagrant' ssh -o StrictHostKeyChecking=no -p 2233 vagrant@web-box.dev
+  ignore_errors: true
+
+
+- name: Create jenkins job directory
+  file: dest="/var/lib/jenkins/jobs/CodeTalks 2014 Demo" owner=jenkins state=directory
+
+- name: create Jenkins job from template
+  sudo_user: jenkins
+  template: src=config.xml dest="/var/lib/jenkins/jobs/CodeTalks 2014 Demo/config.xml" owner=jenkins
+
+#
+# this can also be done via handler
+#
+- name: create Jenkins job from template
+  command: service jenkins force-reload

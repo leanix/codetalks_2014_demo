@@ -1,0 +1,6 @@
+---
+- hosts: ci
+  sudo: true
+  roles:
+    - {role: 'init'}
+    - {role: 'cibox'}

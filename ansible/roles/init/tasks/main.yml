@@ -1,0 +1,33 @@
+---
+#- name: Disable sshd useDNS
+#  lineinfile: dest=/etc/ssh/sshd_config regexp=^UseDNS line="UseDNS no" insertbefore="^UsePAM"
+#  notify: restart sshd
+
+- name: Update apt
+  sudo: yes
+  apt: update_cache=yes
+
+- name: Upgrade packages
+  sudo: yes
+  apt: upgrade=dist
+
+- name: Set server local
+  command: echo "Europe/Berlin" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
+  changed_when: false
+
+- name: German kb
+  sudo: yes
+  command: loadkeys de
+  changed_when: false
+
+- name: Set hostname on boot to short name from inventory list
+  template: src=hostname.j2 dest=/etc/hostname owner=root group=root mode=0644 backup=yes
+  register: hostname_file
+
+- name: Change hostname on running system
+  command: hostname -F /etc/hostname
+  when: '${hostname_file.changed}'
+
+- name: Update hosts file
+  template: src=hosts.j2 dest=/etc/hosts owner=root group=root mode=0644 backup=yes
+  register: hosts_file
