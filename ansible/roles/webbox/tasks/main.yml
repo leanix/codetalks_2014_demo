@@ -21,7 +21,4 @@
   template: src=index.html.j2 dest={{webbox_deploy_path}}/index.html mode=644
 
 - name: Change owner to www-data
-  shell: "chown -R www-data:www-data {{webbox_deploy_path}}"
-
-- name: Change owner to www-data
-  shell: "chmod -R 755 {{webbox_deploy_path}}"
+  file: state=directory dest="{{webbox_deploy_path}}" owner=www-data group=www-data recurse=yes mode=755
