@@ -3,13 +3,15 @@
 #  lineinfile: dest=/etc/ssh/sshd_config regexp=^UseDNS line="UseDNS no" insertbefore="^UsePAM"
 #  notify: restart sshd
 
-- name: Update apt
-  sudo: yes
-  apt: update_cache=yes
+# Theses tasks might be counterproductive in the demo:
 
-- name: Upgrade packages
-  sudo: yes
-  apt: upgrade=dist
+#- name: Update apt
+#  sudo: yes
+#  apt: update_cache=yes
+
+#- name: Upgrade packages
+#  sudo: yes
+#  apt: upgrade=dist
 
 - name: Set server local
   command: echo "Europe/Berlin" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
